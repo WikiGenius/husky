@@ -21,11 +21,14 @@
   <xacro:include filename="$(find husky_description)/urdf/decorations.urdf.xacro" />
   <xacro:include filename="$(find husky_description)/urdf/wheel.urdf.xacro" />
 
-  <xacro:include filename="$(find husky_description)/urdf/accessories/intel_realsense.urdf.xacro"/>
-  <!-- <xacro:include filename="$(find husky_description)/urdf/accessories/sick_lms1xx_mount.urdf.xacro"/> -->
-  <xacro:include filename="$(find husky_description)/urdf/accessories/sensor_arch.urdf.xacro"/>
+  <!-- <xacro:include filename="$(find husky_description)/urdf/accessories/intel_realsense.urdf.xacro" /> -->
+  <xacro:include filename="$(find husky_description)/urdf/accessories/d435_mount.urdf.xacro" />
 
-  <xacro:property name="M_PI" value="3.14159"/>
+  <!-- <xacro:include filename="$(find
+  husky_description)/urdf/accessories/sick_lms1xx_mount.urdf.xacro"/> -->
+  <xacro:include filename="$(find husky_description)/urdf/accessories/sensor_arch.urdf.xacro" />
+
+  <xacro:property name="M_PI" value="3.14159" />
 
   <xacro:macro name="husky" params="prefix">
 
@@ -52,21 +55,24 @@
         </geometry>
       </visual>
       <collision>
-        <origin xyz="${( husky_front_bumper_extend - husky_rear_bumper_extend ) / 2.0} 0 ${base_z_size/4}" rpy="0 0 0" />
+        <origin
+          xyz="${( husky_front_bumper_extend - husky_rear_bumper_extend ) / 2.0} 0 ${base_z_size/4}"
+          rpy="0 0 0" />
         <geometry>
-          <box size="${ base_x_size + husky_front_bumper_extend + husky_rear_bumper_extend } ${base_y_size} ${base_z_size/2}"/>
+          <box
+            size="${ base_x_size + husky_front_bumper_extend + husky_rear_bumper_extend } ${base_y_size} ${base_z_size/2}" />
         </geometry>
       </collision>
       <collision>
         <origin xyz="0 0 ${base_z_size*3/4-0.01}" rpy="0 0 0" />
         <geometry>
-          <box size="${base_x_size*4/5} ${base_y_size} ${base_z_size/2-0.02}"/>
+          <box size="${base_x_size*4/5} ${base_y_size} ${base_z_size/2-0.02}" />
         </geometry>
       </collision>
     </link>
 
     <!-- Base footprint is on the ground under the robot -->
-    <link name="${prefix}base_footprint"/>
+    <link name="${prefix}base_footprint" />
 
     <joint name="${prefix}base_footprint_joint" type="fixed">
       <origin xyz="0 0 ${wheel_vertical_offset - wheel_radius}" rpy="0 0 0" />
@@ -91,7 +97,7 @@
 
     <!-- IMU Link-->
     <!-- Can be modified with environment variables in /etc/ros/setup.bash -->
-    <link name="${prefix}imu_link"/>
+    <link name="${prefix}imu_link" />
     <joint name="${prefix}imu_joint" type="fixed">
       <origin xyz="$(optenv CPR_IMU_XYZ 0 0 0)" rpy="$(optenv CPR_IMU_RPY 0 0 0)" />
       <parent link="${prefix}base_link" />
@@ -100,7 +106,7 @@
 
     <!-- GPS Link-->
     <!-- Can be modified with environment variables in /etc/ros/setup.bash -->
-    <link name="${prefix}gps_link"/>
+    <link name="${prefix}gps_link" />
     <joint name="${prefix}gps_joint" type="fixed">
       <origin xyz="$(optenv CPR_GPS_XYZ 0 0 0)" rpy="$(optenv CPR_GPS_RPY 0 0 0)" />
       <parent link="${prefix}base_link" />
@@ -143,22 +149,26 @@
       keep this as a property to make it easier to add multiple conditions, should we need
       the top bar for any additional sensors in the future
     -->
-    <!-- <xacro:property name="topbar_needed_realsense" value="$(arg realsense_enabled)" />
+    <xacro:property name="topbar_needed_realsense" value="$(arg realsense_enabled)" />
     <xacro:if value="${topbar_needed_realsense}">
       <xacro:sensor_arch prefix="" parent="top_plate_link">
-        <origin xyz="-0.35 0 0.51" rpy="0 0 -3.14"/>
+        <origin xyz="-0.35 0 0.51" rpy="0 0 -3.14" />
       </xacro:sensor_arch>
-    </xacro:if> -->
+    </xacro:if>
 
     <!-- add the intel realsense to the topbar if needed -->
     <xacro:if value="$(arg realsense_enabled)">
-      <link name="realsense_mountpoint"/>
+      <link name="realsense_mountpoint" />
       <joint name="realsense_mountpoint_joint" type="fixed">
         <origin xyz="$(arg realsense_xyz)" rpy="$(arg realsense_rpy)" />
-        <parent link="$(arg realsense_mount)"/>
+        <parent link="$(arg realsense_mount)" />
         <child link="realsense_mountpoint" />
       </joint>
-      <xacro:intel_realsense_mount prefix="camera" topic="realsense" parent_link="realsense_mountpoint"/>
+      <!-- <xacro:intel_realsense_mount prefix="camera" topic="realsense"
+        parent_link="realsense_mountpoint" /> -->
+      <xacro:d435_mount parent="realsense_mountpoint"
+        xyz="0 0 0"
+        rpy="0 0 0" />
     </xacro:if>
 
     <ros2_control name="${prefix}husky_hardware" type="system">
@@ -183,32 +193,32 @@
           <param name="min">-1</param>
           <param name="max">1</param>
         </command_interface>
-        <state_interface name="position"/>
-        <state_interface name="velocity"/>
+        <state_interface name="position" />
+        <state_interface name="velocity" />
       </joint>
       <joint name="${prefix}rear_left_wheel_joint">
         <command_interface name="velocity">
           <param name="min">-1</param>
           <param name="max">1</param>
         </command_interface>
-        <state_interface name="position"/>
-        <state_interface name="velocity"/>
+        <state_interface name="position" />
+        <state_interface name="velocity" />
       </joint>
       <joint name="${prefix}front_right_wheel_joint">
         <command_interface name="velocity">
           <param name="min">-1</param>
           <param name="max">1</param>
         </command_interface>
-        <state_interface name="position"/>
-        <state_interface name="velocity"/>
+        <state_interface name="position" />
+        <state_interface name="velocity" />
       </joint>
       <joint name="${prefix}rear_right_wheel_joint">
         <command_interface name="velocity">
           <param name="min">-1</param>
           <param name="max">1</param>
         </command_interface>
-        <state_interface name="position"/>
-        <state_interface name="velocity"/>
+        <state_interface name="position" />
+        <state_interface name="velocity" />
       </joint>
     </ros2_control>
 
