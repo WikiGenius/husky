@@ -152,7 +152,8 @@
     <xacro:property name="topbar_needed_realsense" value="$(arg realsense_enabled)" />
     <xacro:if value="${topbar_needed_realsense}">
       <xacro:sensor_arch prefix="" parent="top_plate_link">
-        <origin xyz="-0.35 0 0.51" rpy="0 0 -3.14" />
+        <!-- <origin xyz="-0.35 0 0.51" rpy="0 0 -3.14" /> -->
+        <origin xyz="0.35 0 0.51" rpy="0 0 0" />
       </xacro:sensor_arch>
     </xacro:if>
 
