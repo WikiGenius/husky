@@ -39,7 +39,7 @@ TOP_ARGS = [
     DeclareLaunchArgument(
         'world_name',
         default_value=PathJoinSubstitution([
-            FindPackageShare('husky_gazebo'), 'worlds', 'clearpath_playpen.world'
+            FindPackageShare('husky_gazebo'), 'worlds', 'terrain_1.world'
         ]),
         description='Path to Gazebo world file (relative to GAZEBO_RESOURCE_PATH)'
     ),

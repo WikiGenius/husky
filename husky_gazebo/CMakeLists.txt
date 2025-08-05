@@ -16,9 +16,17 @@ find_package(xacro REQUIRED)
 
 install(
   DIRECTORY
-    launch worlds
+    launch worlds models
   DESTINATION
     share/${PROJECT_NAME}
+)
+install(PROGRAMS
+  scripts/timed_ros2_launch.sh 
+  DESTINATION lib/${PROJECT_NAME}
+)
+install(PROGRAMS
+  scripts/timed_ros2_run.sh
+  DESTINATION lib/${PROJECT_NAME}
 )
 
 ament_package()
