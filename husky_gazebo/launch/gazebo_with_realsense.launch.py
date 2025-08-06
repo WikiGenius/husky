@@ -65,6 +65,24 @@ ARGUMENTS = [
         default_value="0 0 0",
         description="RPY offset (rad) relative to mount link",
     ),
+    DeclareLaunchArgument(
+        "spawn_x", default_value="-20.0", description="Spawn X position (m)"
+    ),
+    DeclareLaunchArgument(
+        "spawn_y", default_value="-51.0", description="Spawn Y position (m)"
+    ),
+    DeclareLaunchArgument(
+        "spawn_z", default_value="0.5", description="Spawn Z position (m)"
+    ),
+    DeclareLaunchArgument(
+        "spawn_R", default_value="0.0", description="Spawn roll (rad)"
+    ),
+    DeclareLaunchArgument(
+        "spawn_P", default_value="0.0", description="Spawn pitch (rad)"
+    ),
+    DeclareLaunchArgument(
+        "spawn_Y", default_value="0.0", description="Spawn yaw (rad)"
+    ),
 ]
 
 
@@ -184,8 +202,25 @@ def generate_launch_description() -> LaunchDescription:
         package="gazebo_ros",
         executable="spawn_entity.py",
         name="spawn_husky",
-        arguments=["-entity", "husky", "-topic", "robot_description"],
         output="screen",
+        arguments=[
+            "-entity",
+            "husky",
+            "-topic",
+            "robot_description",
+            "-x",
+            LaunchConfiguration("spawn_x"),
+            "-y",
+            LaunchConfiguration("spawn_y"),
+            "-z",
+            LaunchConfiguration("spawn_z"),
+            "-R",
+            LaunchConfiguration("spawn_R"),
+            "-P",
+            LaunchConfiguration("spawn_P"),
+            "-Y",
+            LaunchConfiguration("spawn_Y"),
+        ],
     )
     odom_base_transform = Node(
         package="tf2_ros",
@@ -203,6 +238,7 @@ def generate_launch_description() -> LaunchDescription:
             "base_link",
         ],
     )
+
     # ── Optional accessory launch files (unchanged) ────────
     ctrl_launch = PythonLaunchDescriptionSource(
         pkg_share("husky_control") / "launch" / "control.launch.py"
